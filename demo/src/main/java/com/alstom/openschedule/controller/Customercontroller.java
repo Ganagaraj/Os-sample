@@ -56,11 +56,25 @@ public class Customercontroller<T> {
 
 
 	public String delete(Customer customer) {
+          
+		if(!customer.isCreating()) {
+			 cusRep.deleteCustomer(customer);
+			  System.out.println("DELETE BEING CALLED");
+		}
+		 
+		  recreateModel();
+		  return "List";
 
-		  cusRep.deleteCustomer(customer);
-		  System.out.println(customer.getName());
-		  return "Delete";
-
+	}
+	
+	public String cancel(Customer customer) {
+		 if(customer.isCreating() || customer.isEditing()) {
+			 if(customer.isEditing()) {
+				 customer.setEditing(false);
+			 }
+			 recreateModel();
+		 }
+		 return "List";
 	}
 	
 	  public String activateEdit(Customer customer) {

@@ -13,7 +13,11 @@
     	
     	<h1>Open Schedule Customers list</h1>
     	
-    
+           <h:panelGrid id="panelGrid1" columns="1" >
+                <h:commandButton id="addButton" value="Add new" disabled="false">
+                    <f:ajax event="click" render="list @this" listener="#{customerService.create}"></f:ajax>
+                </h:commandButton>
+           </h:panelGrid>
     	 <h:panelGroup id ="list">
     		<h:dataTable value="#{customerService.items}"   var="o">
            
@@ -61,7 +65,7 @@
     			</h:commandButton>
     			 <h:outputText value=" "/>
     			  <h:commandButton value="Delete">
-                <f:ajax  render="list @this" listener="#{customerService.delete(o)}"/>
+                <f:ajax render="list @this" listener="#{customerService.delete(o)}"/>
             </h:commandButton>
     			
     			 <h:outputText value=" "/>
@@ -69,6 +73,10 @@
     			         <f:ajax event="click" execute="oid oname oemail ophone" render="list @this" listener="#{customerService.save(o)}"/>
     			</h:commandButton>
     			
+    			 <h:outputText value=" "/>
+    			<h:commandButton value="Cancel" > 
+    			         <f:ajax event="click" render="list @this" listener="#{customerService.cancel(o)}"/>
+    			</h:commandButton>
     			</h:column>
     		</h:dataTable>
     		</h:panelGroup>
@@ -98,7 +106,7 @@
          	
          	<h:form>	
                       <h:commandButton value="Dele" type="button" disabled = "true" rendered = "false"> 
-    			       <f:ajax event="click" render="list @this" listener="#{customerService.delete(o)}"></f:ajax>
+    			       <f:ajax event="click" execute="list @this" listener="#{customerService.delete(o)}"></f:ajax>
     			     </h:commandButton>
     			     <h:commandButton value="edit" type="button" disabled = "true" rendered = "false"> 
     			       <f:ajax event="click" render="list" listener="#{customerService.activateEdit(o)}"></f:ajax>
