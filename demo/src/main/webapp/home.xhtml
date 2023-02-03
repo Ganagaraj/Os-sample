@@ -33,8 +33,7 @@
     			<h:column>
     				<f:facet name="header">Id</f:facet>
     				<h:panelGroup id="oid">
-    				 <h:outputText value="#{o.id}" rendered="#{not o.editing}"/>
-    				 <h:inputText  value="#{o.id}" rendered="#{o.editing}" required="true"/>
+    				 <h:outputText value="#{o.id}" />
     			    </h:panelGroup>
     			</h:column>
     			
@@ -70,7 +69,7 @@
                     </f:facet>
                    
     			<h:commandButton value="Edit" rendered="#{not o.editing}"> 
-    			          <f:ajax event="click" execute="oid oname oemail ophone" render="list @this" listener="#{customerService.activateEdit(o)}"/>
+    			          <f:ajax event="click" execute="oname oemail ophone" render="list @this" listener="#{customerService.activateEdit(o)}"/>
     			</h:commandButton>
     			 <h:outputText value=" "/>
     			  <h:commandButton value="Delete" rendered = "#{not o.editing}">
@@ -79,7 +78,7 @@
     			
     			 <h:outputText value=" "/>
     			<h:commandButton value="Save" type="submit" action="#{customerService.save(o)}" rendered="#{o.editing}"> 
-    			         <f:ajax event="click" execute="oid oname oemail ophone" render="list @this" listener="#{customerService.save(o)}"/>
+    			         <f:ajax event="click" execute="oname oemail ophone" render="list @this" listener="#{customerService.save(o)}"/>
     			</h:commandButton>
     			
     			 <h:outputText value=" "/>
