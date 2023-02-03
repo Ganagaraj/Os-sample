@@ -1,8 +1,11 @@
 package com.alstom.openschedule.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
@@ -17,13 +20,47 @@ import com.alstom.openschedule.repository.CustomerRepository;
 
 @SuppressWarnings("deprecation")
 @ManagedBean(name = "customerService", eager = true)
-@SessionScoped
-@RequestScoped
+@javax.faces.bean.SessionScoped
 public class Customercontroller<T> {
 	
 	
 	private CustomerRepository cusRep = new CustomerRepository();
-	private DataModel items = null;
+	private static DataModel items = null;
+//	private static Collection<Integer> ids = null;
+	
+	public Customercontroller(){
+	
+	}
+	
+	/* @PostConstruct
+	   public void init() {
+		    ids = cusRep.getCusomerIds();
+		    for(Integer id :ids) {
+		    	System.out.println(id);
+		    }
+	    }
+
+	public Collection<Integer> getIds() {
+		return ids;
+	}
+   
+	public boolean isSelect() {
+		 if(ids==null) {
+			 return false;
+		 }
+		 else {
+			 return true;
+		 }
+	}
+	
+	public String bring() {
+		return null;
+	} */
+
+
+	public CustomerRepository getCusRep() {
+		return cusRep;
+	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public DataModel findAll() {
@@ -33,6 +70,7 @@ public class Customercontroller<T> {
 
 	public DataModel getItems() {
 		 if(items==null) {
+			 System.out.println("recollectong");
 			 items = findAll();
 		 }
 		 return items;
@@ -72,6 +110,9 @@ public class Customercontroller<T> {
 			 if(customer.isEditing()) {
 				 customer.setEditing(false);
 			 }
+			 if(customer.isCreating()) {
+				 customer.setCreating(false);
+			 }
 			 recreateModel();
 		 }
 		 return "List";
@@ -81,15 +122,43 @@ public class Customercontroller<T> {
 	        customer.setEditing(true);
 	        return null;
 	    }
+	  
+	  public boolean isAddAllowed() {
+	        List<Customer> array = (List<Customer>) getItems().getWrappedData();
+	        if (array == null || array.isEmpty()) {
+	            return true;
+	        } else {
+
+	            Customer e = (Customer) array.get(0);
+	            if (e != null && e.isCreating()) {
+	                return false;
+	            } else {
+	                Iterator<Customer> iterator = array.iterator();
+	                while (iterator.hasNext()) {
+	                    Customer item = (Customer) iterator.next();
+	                    if (item.isEditing()) {
+	                        return false;
+	                    }
+	                }
+	            }
+	            return true;
+	        }
+	    }
+
+	  
 	public String save(Customer customer) {
 		
-		if(customer.isCreating()) {
-			System.err.println("Creatting");
-			System.out.println(customer.getName() + customer.isCreating());
-		 
+		System.out.println(customer.getName());
+		if(customer.isCreating() && customer.isEditing()) {
+			cusRep.addCustomerInDb(customer);
+			customer.setCreating(false);
+			customer.setEditing(false);
 		}
-		System.out.println(customer.getName() + customer.isEditing());
-		customer.setEditing(false);
+		if(!customer.isCreating() && customer.isEditing()){
+			cusRep.updateCustomerRecord(customer);
+			customer.setEditing(false);
+		}
+		
 		return null;
 	}
 	
